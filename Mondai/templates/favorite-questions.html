@@ -1,0 +1,154 @@
+{% extends "base.html" %} {% block head %}
+<!-- CSS読み込みの記述 -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/basics.css' %}" />
+<link rel="stylesheet" href="{% static 'css/list.css' %}" />
+{% endblock head %} {% block title %}
+<title>お気に入り問題一覧</title>
+{% endblock title %} {% block content %}
+<article>
+  {% include "sidebar.html" %}
+  <section>
+    <h1>{{ keyword.keyword_name }}の問題一覧</h1>
+    <div class="return">
+      <div class="create-btn">
+        <button
+          class="edit-btn"
+          onclick="location.href='{% url 'Mondai_app:create-question' pk=keyword.id %}'"
+        >
+          問題作成
+        </button>
+      </div>
+      <div>
+        <!-- favorite_questions_countをpaginator.countに修正し、総数表示 -->
+        {% if page_obj.paginator.count > 1 %}
+        <button
+          class="edit-btn random"
+          onclick="location.href='{% url 'Mondai_app:test-keyword' check_favorite='favorite' keywords_pk=keyword.id %}'"
+        >
+          お気に入りテスト
+        </button>
+        {% elif page_obj.paginator.count == 1 %}
+        <button
+          class="edit-btn random"
+          onclick="location.href='{% url 'Mondai_app:test-one' check_favorite='normal' questions_pk=question.id %}'"
+        >
+          お気に入りテスト
+        </button>
+        {% endif %}
+      </div>
+    </div>
+    <div class="container">
+      <div class="item">
+        <table width="95%">
+          <thead>
+            <tr>
+              <th width="10%"></th>
+              <th width="10%"></th>
+              <th width="45%">問題</th>
+              <th width="25%">登録者</th>
+              <th width="10%"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- ページネーションされたFavoriteQuestionsViewのobject_listを表示する -->
+            {% if object_list %} {% for question in object_list %}
+            <tr>
+              <td width="10%">
+                <!-- 編集ボタン -->
+                {% if user == question.user %}
+                <a
+                  href="{% url 'Mondai_app:update-question' pk=keyword.id question_pk=question.id %}"
+                >
+                  <img src="{% static "images/pencil.png" %}" width="25px"
+                  height="25px" alt="編集">
+                </a>
+                {% endif %}
+              </td>
+              <td width="10%">
+                <!-- お気に入り登録・解除ボタン -->
+                <form
+                  action="{% url 'Mondai_app:favorite' pk=question.id %}"
+                  method="post"
+                >
+                  {% csrf_token %} {% if question.id in favorite_questions %}
+                  <input
+                    type="image"
+                    name="favorite"
+                    src="{% static 'images/mdi_star.png' %}"
+                    width="25px"
+                    height="25px"
+                    alt="お気に入り解除"
+                    style="z-index: 99"
+                  />
+                  {% else %}
+                  <input
+                    type="image"
+                    name="favorite"
+                    src="{% static 'images/mdi_star-outline.png' %}"
+                    width="25px"
+                    height="25px"
+                    alt="お気に入り登録"
+                    style="z-index: 99"
+                  />
+                  {% endif %}
+                </form>
+              </td>
+              <td width="45%" class="hoverable-cell td1">
+                <a
+                  href="{% url 'Mondai_app:detail-question' check_favorite='favorite' question_pk=question.id %}"
+                  class="qstitle"
+                  >{{ question.question }}</a
+                >
+              </td>
+              <td width="25%" class="hoverable-cell td2">
+                <a
+                  href="{% url 'Mondai_app:detail-question' check_favorite='favorite' question_pk=question.id %}"
+                  class="truncate"
+                  >{{ question.user.username }}</a
+                >
+              </td>
+              <td width="10%" class="arrow-cell td3 hoverable-img">
+                <a
+                  href="{% url 'Mondai_app:detail-question' check_favorite='favorite' question_pk=question.id %}"
+                >
+                  <img src="{% static "images/link_arrow-right.png" %}"
+                  width="25px" height="25px" alt="各問題へ">
+                </a>
+              </td>
+              {% endfor%} {% else %}
+              <td colspan="5">問題が登録されていません</td>
+              {% endif %}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ページネーション用のUI -->
+      <div class="pagination">
+        <span class="step-links">
+          {% if page_obj.has_previous %}
+          <!-- 現在よりも前のページが存在する場合 -->
+          <a href="?page=1">&laquo; 先頭</a>
+          <a href="?page={{ page_obj.previous_page_number }}">&lt;前へ</a>
+          {% endif %}
+
+          <span class="current">
+            <!-- 現在のページ番号と、全ページ数を表示 -->
+            {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+          </span>
+
+          {% if page_obj.has_next %}
+          <!-- 現在よりも後のページが存在する場合 -->
+          <a href="?page={{ page_obj.next_page_number }}">次へ&gt;</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}">最後 &raquo;</a>
+          {% endif %}
+        </span>
+      </div>
+    </div>
+  </section>
+</article>
+{% endblock content %} {% block script %}
+<script src="{% static 'js/text-length.js' %}"></script>
+<script src="{% static 'js/link.js' %}"></script>
+{% endblock script %}

@@ -1,0 +1,6 @@
+mysql_data/*
+__pycache__/
+static/*
+
+Mondai/Mondai_app/migrations/*
+phpmyadmin/sessions/*

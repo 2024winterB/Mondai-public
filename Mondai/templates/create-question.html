@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- CSS読み込みの記述 -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/create-question.css' %}" />
+<link rel="stylesheet" href="{% static 'css/modal.css' %}" />
+{% endblock head %}
+
+{% block title %}
+<title>問題登録</title>
+{% endblock title %}
+
+{% block content %}
+<article>
+  {% include "sidebar.html" %}
+  <section>
+    <h1 id="keyword-name" class="creation">{{ keyword.keyword_name }}</h1>
+    <div class="return">
+      <a href="{% url "Mondai_app:questions" pk=keyword.id%}">
+        問題一覧に戻る
+        <img src="{% static "images/ei_arrow-right.png" %}" alt="問題一覧に戻る">
+      </a>
+    </div>
+    <div class="container">
+      {% include "loading.html" %}
+      <div class="item">
+        <form method="POST" id="question-form">
+          {% csrf_token %}
+          <div>
+            <label for="{{ form.question.id_for_label }}">問題</label>
+            <!-- エラーメッセージ表示 -->
+            {% for error in form.question.errors %}
+              <span class="error">{{ error }}</span>
+            {% endfor %}
+            <textarea type="text" name="question" id="id_question" class="r-form text" placeholder="作成したい問題文を入力してください">{{ form.instance.question }}</textarea>
+          </div>
+          <div>
+            <label for="{{ form.equal.id_for_label }}">判定タイプ</label>
+            <div class="selectwrap">
+              <select name="{{ form.equal.name }}" id="{{ form.equal.id_for_label }}" class="select">
+                {% for value, label in form.fields.equal.choices %}
+                  <option value="{{ value }}" {% if value == form.instance.equal %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div>
+            <label for="{{ form.correct_answer.id_for_label }}">正解</label>
+            <!-- エラーメッセージ表示 -->
+            {% for error in form.correct_answer.errors %}
+              <span class="error">{{ error }}</span>
+            {% endfor %}
+            <input type="text" name="{{ form.correct_answer.name }}" id="{{ form.correct_answer.auto_id }}" class="r-form" placeholder="正解を入力してください" value="{{ form.instance.correct_answer }}">
+          </div>
+          <div>
+            <label for="{{ form.note.id_for_label }}">備考</label>
+            <!-- エラーメッセージ表示 -->
+            {% for error in form.note.errors %}
+              <span class="error">{{ error }}</span>
+            {% endfor %}
+            <textarea name="{{ form.note.name }}" id="{{ form.note.auto_id }}" class="r-form text" placeholder="解説や参考URL等を入力してください">{{ form.instance.note }}</textarea>
+          </div>
+          <button type="submit" class="r-btn">登録</button>
+          <div class="ai-btn-box">
+            <button type="button" name="ai_generate" class="ai-btn" id="ai_generate">GPT解説依頼</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</article>
+<!-- モーダルのマスクの記述 -->
+<div id="mask" class="modal-mask"></div>
+<!-- モーダルの記述 -->
+<div id="modal" class="modal-window">
+    <div id="modalcontent" class="modal-content">
+        <h2 class="modal-title">登録完了</h2>
+        <p class="modal-text">{{ keyword.keyword_name }}の登録が完了しました。</p>
+        <button type="button" class="modal-button" onclick="window.location.href='{% url 'Mondai_app:create-question' pk=keyword.id  %}'">問題作成画面に進む</button>
+    </div>
+</div>
+{% endblock content %}
+
+{% block script %}
+  <script>
+    // AIボタンの要素を取得します。
+    var ai_generate = document.getElementById("ai_generate");
+    // ローディング用のdivを取得します。
+    var loading = document.getElementById("loading");
+    // ローディング用のdivを非表示にします。
+    loading.style.display = "none";
+    // フォームのsubmitイベントをキャッチします。
+    ai_generate.addEventListener("click", function(event) {
+      // デフォルトの送信動作をキャンセルします。
+      event.preventDefault();
+      // id correct の要素を取得
+      var id_correct_answer = document.getElementById("id_correct_answer");
+      // id correct の値が空白かどうか判定
+      if (id_correct_answer.value == "") {
+        // 空白だったら、id correct の値を「解説参照」と設定
+        id_correct_answer.value = "解説参照";
+      }
+      // フォームの要素を取得します。
+      var form = document.getElementById("question-form");
+      // フォームの送信先URLを取得
+      const url = form.action;
+      // フォームデータを作成
+      const data = new FormData(form);
+      // フォームデータにai_generateの値を追加
+      data.append("ai_generate", "true");
+
+      // Ajaxでサーバーに送信する関数を定義
+      async function send() {
+        // ローディング画面を表示
+        loading.style.display = "block";
+
+        // fetch APIでサーバーに送信
+        const response = await fetch(url, {
+          method: "POST",
+          body: data
+        });
+
+        // ローディング画面を非表示
+        loading.style.display = "none";
+
+        // レスポンスが正常なら
+        if (response.ok) {
+          window.location.href = "{% url "Mondai_app:questions" pk=keyword.id%}";
+        } else {
+          // エラー処理
+          console.error("Error:", response.status, response.statusText);
+        }
+      }
+      // 送信関数を呼び出す
+      send();
+    });
+  </script>
+  <script src="{% static 'js/text-length.js' %}"></script>
+  <script src="{% static 'js/created-keywords.js' %}"></script>
+{% endblock script %}

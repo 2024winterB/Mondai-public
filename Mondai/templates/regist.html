@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- CSS読み込みの記述 -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock head %}
+
+{% block title %}
+<title>新規登録</title>
+{% endblock title %}
+
+{% block content %}
+<div class="background">
+  <div class="content">
+    <!-- タイトル -->
+    <div class="title">
+      <h1>Linkey</h1>
+    </div>
+    <div>
+      <form method="POST">
+        {% csrf_token %}
+        <!-- Nameフォーム -->
+        <div>
+          <!-- エラーメッセージ表示 -->
+          {% for error in form.username.errors %}
+            <span class="error">{{ error }}</span>
+          {% endfor %}
+
+          <input type="text" id="{{ form.username.auto_id }}" name="{{ form.username.name }}" value="{{ form.username.value|default:'' }}" placeholder="Name" class="e-form">
+        </div>
+
+        <!-- Emailフォーム -->
+        <div>
+          <!-- エラーメッセージ表示 -->
+          {% for error in form.email.errors %}
+            <span class="error">{{ error }}</span>
+          {% endfor %}
+
+          <input type="text" id="{{ form.email.auto_id }}" name="{{ form.email.name }}" value="{{ form.email.value|default:'' }}" placeholder="Email" class="e-form">
+        </div>
+
+        <!-- Passswordフォーム -->
+        <div>
+          <!-- エラーメッセージ表示 -->
+          {% for error in form.password.errors %}
+            <span class="error">{{ error }}</span>
+          {% endfor %}
+
+          <input type="password" id="{{ form.password.id_for_label }}" name="{{ form.password.name }}" value="{{ form.password.value|default:'' }}" placeholder="Password" class="p-form">
+        </div>
+
+          <!-- ボタン -->
+          <input type="hidden" name="next" value="{{ request.GET.next }}">
+          <button type="submit">
+            Create an account
+          </button>
+      </form>
+
+      <!-- Signupリンク -->
+      <div class="signup-link">
+        Already have an account.
+        <a href="{% url "Mondai_app:login" %}" class="s-link">Login</a>
+      </div>
+    </div>
+  </div>
+  <ul class="bg-bubbles">
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+</ul>
+</div>
+{% endblock content %}

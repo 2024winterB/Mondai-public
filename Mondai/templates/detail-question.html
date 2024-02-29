@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- CSS読み込みの記述 -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/answer.css' %}" />
+{% endblock head %} {% block title %}
+<title>詳細</title>
+{% endblock title %}
+
+{% block content %}
+<article>
+  {% include "sidebar.html" %}
+  <section>
+    <h1>詳細</h1>
+    <div class="return">
+      {% if check_favorite == "normal" %}
+      <a href="{% url 'Mondai_app:questions' pk=question.keyword.id %}">
+        問題一覧に戻る <img src="{% static "images/ei_arrow-right.png" %}"
+        alt="問題一覧に戻る">
+      </a>
+      {% elif check_favorite == "favorite" %}
+      <a
+        href="{% url 'Mondai_app:favorite-questions' pk=question.keyword.id %}"
+      >
+        問題一覧に戻る <img src="{% static "images/ei_arrow-right.png" %}"
+        alt="問題一覧に戻る">
+      </a>
+      {% endif %}
+    </div>
+
+    <div class="container">
+      <div class="item">
+        <!-- お気に入り登録・解除ボタン -->
+        <form
+          action="{% url 'Mondai_app:favorite' pk=question.id %}"
+          method="post"
+          class="favorite-btn"
+        >
+          {% csrf_token %}
+          {% if question.id in favorite_questions %}
+            <input type="image" name="favorite" src="{% static 'images/mdi_star.png' %}" width="25px" height="25px" alt="お気に入り解除" style="z-index: 99;">
+          {% else %}
+            <input type="image" name="favorite" src="{% static 'images/mdi_star-outline.png' %}" width="25px" height="25px" alt="お気に入り登録" style="z-index: 99;">
+          {% endif %}
+        </form>
+
+        <div class="block">
+          {% if question.equal == '1' %}
+            <label>判定</label>
+            {% if grades is None %}
+              <p>まだ成績がありません</p>
+            {% else %}
+              {% if grades.score%}
+                <p>◯</p>
+              {% else %}
+                <p>❌</p>
+              {% endif %}
+            {% endif %}
+          {% elif question.equal == '0' %}
+            {% if grades is None %}
+            <p>まだ成績がありません</p>
+            {% else %}
+            <label>自己判定</label>
+            <form method="POST" action="" class="self-score">
+              {% csrf_token %}
+              {% if grades.score == 1 %}
+                <input type="radio" id="true" name="score" value="1" checked />
+              {% else %}
+                <input type="radio" id="true" name="score" value="1" />
+              {% endif %}
+              <label for="true" class="score">◯</label>
+              {% if grades.score == 0 %}
+                <input type="radio" id="false" name="score" value="0" checked />
+              {% else %}
+                <input type="radio" id="false" name="score" value="0" />
+              {% endif %}
+                <label for="false" class="score">❌</label>
+                <input type="submit" class="self-score-btn" value="自己判定保存" />
+            </form>
+            {% endif %}
+          {% endif %}
+
+          <label>問題</label>
+          <p style="white-space: pre-wrap;">{{ question.question }}</p>
+
+          <label>あなたの答え</label>
+          {% if grades is None %}
+            <p>まだ成績がありません</p>
+          {% else %}
+            <p>{{ grades.last_answer }}</p>
+          {% endif %}
+
+          <label>正答</label>
+          <p>{{ question.correct_answer }}</p>
+
+          <label>解説・備考</label>
+          <p style='white-space: pre-wrap;'>{{ a_note }}</p>
+        
+        </div>
+        <p id="keyword-list">{{ keyword_list }}</p>
+      </div>
+    </div>
+  </section>
+</article>
+{% endblock content %}
+
+{% block script %}
+  <script>
+    var keywordObj = document.getElementById("keyword-list").innerHTML;
+    console.log(keywordObj);
+    keywordObj = JSON.parse(keywordObj);
+
+    // id noteの要素を取得する
+    var note = document.getElementById("note");
+
+    // divタグのinnerHTMLを取得する
+    var html = note.innerHTML;
+    console.log(html);
+
+    // オブジェクトのキーと値をループで回す
+    for (var key in keywordObj) {
+      // valueに一致するものがあれば
+      if (html.includes(key)) {
+        // その用語にaタグを付けてリンクを付与
+        var url = `{% url 'Mondai_app:login' %}`; // URLを生成
+        var parts = url.split("/");
+        parts.pop();
+        parts.pop();
+        var newUrl = parts.join("/");
+        console.log(newUrl); // "http://localhost:8000/mondai"
+        html = html.replace(key, `<a href="${newUrl}/${keywordObj[key]}/questions/" style="font-weight:bold;">${key}</a>`);
+        console.log(html)
+      }
+    }
+
+    // noteのinnerHTMLを書き換える
+    note.innerHTML = html;
+
+  </script>
+{% endblock script %}

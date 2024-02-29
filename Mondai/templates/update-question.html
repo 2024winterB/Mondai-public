@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- CSS読み込みの記述 -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/create-question.css' %}" />
+{% endblock head %}
+
+{% block title %}
+<title>問題編集</title>
+{% endblock title %}
+
+{% block content %}
+<article>
+  {% include "sidebar.html" %}
+  <section>
+    <h1 id="keyword-name" class="list-question creation">{{ keyword.keyword_name }}</h1>
+    <div class="return">
+      <a href="{% url 'Mondai_app:questions' pk=keyword.id %}">
+        問題一覧に戻る
+        <img src="{% static "images/ei_arrow-right.png" %}" alt="問題一覧に戻る">
+      </a>
+    </div>
+    <div class="container">
+      <form method="POST" action="{% url 'Mondai_app:delete-question' pk=keyword.id question_pk=question.pk %}" class="delete-form">
+        {% csrf_token %}
+        <input type="image" name="delete" src="{% static 'images/trash.png' %}" width="25px" height="25px" alt="削除" style="z-index: 99;">
+      </form>
+      
+      <div class="item">
+        <form method="POST">
+          {% csrf_token %}
+          <div>
+            <label for="{{ form.question.id_for_label }}">問題</label>
+            <!-- エラーメッセージ表示 -->
+            {% for error in form.question.errors %}
+              <span class="error">{{ error }}</span>
+            {% endfor %}
+            <textarea type="text" name="question" id="id_question" class="r-form text" placeholder="更新したい問題文を入力してください">{{ form.instance.question }}</textarea>
+          </div>
+          <div>
+            <label for="{{ form.equal.id_for_label }}">判定タイプ</label>
+            <div class="selectwrap">
+              <select name="{{ form.equal.name }}" id="{{ form.equal.id_for_label }}" class="select">
+                {% for value, label in form.fields.equal.choices %}
+                  <option value="{{ value }}" {% if value == form.instance.equal %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div>
+            <label for="{{ form.correct_answer.id_for_label }}">正解</label>
+            <!-- エラーメッセージ表示 -->
+            {% for error in form.correct_answer.errors %}
+              <span class="error">{{ error }}</span>
+            {% endfor %}
+            <input type="text" name="{{ form.correct_answer.name }}" id="{{ form.correct_answer.auto_id }}" class="r-form" placeholder="正解を入力してください" value="{{ form.instance.correct_answer }}">
+          </div>
+          <div>
+            <label for="{{ form.note.id_for_label }}">備考</label>
+            <!-- エラーメッセージ表示 -->
+            {% for error in form.note.errors %}
+              <span class="error">{{ error }}</span>
+            {% endfor %}
+            <textarea name="{{ form.note.name }}" id="{{ form.note.auto_id }}" class="r-form text" placeholder="解説や参考URL等を入力してください">{{ form.instance.note }}</textarea>
+          </div>
+          <button type="submit" class="r-btn">更新</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</article>
+{% endblock content %}
+
+{% block script %}
+<script src="{% static 'js/text-length.js' %}"></script>
+<script>
+  // fieldに、既に登録されているcorrect_answerを入れるjavascript
+  // select要素を取得する
+  const select = document.getElementById("id_correct_answer");
+  // 目的のテキストを設定する
+  const textToFind = '{{ question.correct_answer }}';
+  console.log(textToFind)
+  // 選択肢の中から目的のテキストを持つoption要素のインデックスを取得する
+  const selectedAnswer = Array.from(select.options).findIndex(option => option.text === textToFind);
+  // selectedAnswerが見つかった場合
+  if (selectedAnswer !== -1) {
+    // selectedIndexにselectedAnswerを代入する
+    select.selectedIndex = selectedAnswer;
+  }
+</script>
+{% endblock script %}

@@ -1,0 +1,16 @@
+Django<4
+mysqlclient == 2.1.1
+scikit-learn == 1.4.0
+
+# Nginx使うならuwsgi必要
+uwsgi
+
+#PWA関係
+django-pwa
+
+# chatGPT関係
+langchain
+openai == 0.28.1
+
+#mecab関係
+mecab-python3

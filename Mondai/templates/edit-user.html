@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- CSS読み込みの記述 -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/basics.css' %}" />
+<link rel="stylesheet" href="{% static 'css/edituser-modal.css' %}" />
+{% endblock head %}
+
+{% block title %}
+<title>ユーザー情報変更</title>
+{% endblock title %}
+
+{% block content %}
+<article>
+  {% include "sidebar.html" %}
+  <section>
+    <h1>ユーザー情報変更</h1>
+    <div class="container">
+      <div class="item">
+        <form id="profileChangeForm" method="POST" action="{% url 'Mondai_app:edituser' %}">
+          {% csrf_token %}
+          <label for="{{ form.username.id_for_label }}">アカウント名</label>
+          <input
+          type="text"
+          name="{{ form.username.name }}"
+          id="{{ form.username.auto_id }}"
+          value="{{ form.username.value }}"
+          class="edit-form"
+          />
+          <div>
+            <label for="{{ form.email.id_for_label }}">メールアドレス</label>
+            <!-- エラーメッセージ表示 -->
+            {% for error in form.email.errors %}
+              <span class="error">{{ error }}</span>
+            {% endfor %}
+            <input
+              type="text"
+              name="{{ form.email.name }}"
+              id="{{ form.email.auto_id }}"
+              value="{{ form.email.value }}"
+              class="edit-form"
+            />
+          </div>
+
+          <!-- クリックでモーダルが表示される -->
+          <button type="button" id="changeButton" class="edit-btn">変更する</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</article>
+<!-- モーダルのマスクの記述 -->
+<div id="mask" class="modal-mask"></div>
+<!-- モーダルの記述 -->
+<div id="modal" class="modal-window">
+    <div id="modalcontent" class="modal-content">
+        <h2 class="modal-title">変更確認</h2>
+        <!-- 空のchange-profiles.jsのにより、フォームで入力したものに上書きされる -->
+        <p id="modal-username" class="modal-text"></p>
+        <p id="modal-email" class="modal-text"></p>
+        <p class="modal-text">に変更してよろしいですか？</p>
+        <div id="modal-button">
+            <button type="button" class="modal-button" onclick="document.getElementById('profileChangeForm').submit();">はい</button>
+            <button type="button" id="closeButton" class="close-button">いいえ</button>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block script %}
+<script src="{% static 'js/change-profile.js' %}"></script>
+{% endblock script %}

@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- CSS読み込みの記述 -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+<!-- ここから -->
+<link rel="manifest" href="{% static 'js/manifest.json' %}">
+<script>
+  if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/mondai/login/sw.js').then(function() { console.log('Service Worker Registered'); });
+    }
+</script>
+<!-- ここまで追加 -->
+{% endblock head %}
+
+{% block title %}
+<title>ログイン</title>
+{% endblock title %}
+
+{% block content %}
+
+<div class="background">
+  <div class="content">
+    <!-- タイトル -->
+    <div class="title">
+      <h1>Linkey</h1>
+    </div>
+    <div>
+      <form method="POST">
+        {% csrf_token %}
+        <!-- Emailフォーム -->
+        <div>
+          <!-- エラーメッセージ表示 -->
+          {% for error in form.username.errors %}
+            <span class="error">{{ error }}</span>
+          {% endfor %}
+          {% for error in form.non_field_errors %}
+            <span class="error">{{ error }}</span>
+          {% endfor %}
+
+          <input type="text" id="{{ form.username.auto_id }}" name="{{ form.username.name }}" value="{{ form.username.value|default:'' }}" placeholder="Email" class="e-form">
+        </div>
+
+        <!-- Passswordフォーム -->
+        <div>
+          <!-- エラーメッセージ表示 -->
+          {% for error in form.password.errors %}
+            <span class="error">{{ error }}</span>
+          {% endfor %}
+
+          <input type="password" id="{{ form.password.id_for_label }}" name="{{ form.password.name }}" value="{{ form.password.value|default:'' }}" placeholder="Password" class="p-form">
+        </div>
+
+          <!-- ボタン -->
+          <input type="hidden" name="next" value="{{ request.GET.next }}">
+          <button type="submit">
+            LOG IN
+            <img src="{% static "images/key.png" %}" alt="鍵アイコン">
+          </button>
+      </form>
+
+      <!-- Signupリンク -->
+      <div class="signup-link">
+        Don’t have an account?
+        <a href="{% url "Mondai_app:regist" %}" class="s-link">Sign up</a>
+      </div>
+    </div>
+    <div class="pwa" style="display:flex; justify-content:center">
+      <button id="InstallBtn" style="margin-top:20px; width:15vw; padding:5px 10px; font-size:16px; display:none; z-index: 10; position:absolute;">
+        PWA
+      </button>
+    </div>
+  </div>
+  
+  <ul class="bg-bubbles">
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+</ul>
+</div>
+
+<script>
+  //バナーの代わりに表示するボタンを登録する
+  registerInstallAppEvent(document.getElementById("InstallBtn"));
+
+  //バナー表示をキャンセルし、代わりに表示するDOM要素を登録する関数
+  //引数１：イベントを登録するHTMLElement
+  function registerInstallAppEvent(elem){
+    //インストールバナー表示条件満足時のイベントを乗っ取る
+    window.addEventListener('beforeinstallprompt', function(event){
+      console.log("beforeinstallprompt: ", event);
+      event.preventDefault(); //バナー表示をキャンセル
+      elem.promptEvent = event; //eventを保持しておく
+      elem.style.display = "block"; //要素を表示する
+      return false;
+    });
+    //インストールダイアログの表示処理
+    function installApp() {
+      if(elem.promptEvent){
+        elem.promptEvent.prompt(); //ダイアログ表示
+        elem.promptEvent.userChoice.then(function(choice){
+          elem.style.display = "none";
+          elem.promptEvent = null; //一度しか使えないため後始末
+        });//end then
+      }
+    }//end installApp
+    //ダイアログ表示を行うイベントを追加
+    elem.addEventListener("click", installApp);
+  }//end registerInstallAppEvent
+</script>
+{% endblock content %}

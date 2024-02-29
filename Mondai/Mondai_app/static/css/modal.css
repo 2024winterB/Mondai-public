@@ -1,0 +1,125 @@
+@charset "utf-8";
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap");
+
+.modal-mask {
+  background: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9998;
+  display: none;
+}
+
+.modal-window {
+  background: #fff;
+  height: 300px;
+  width: 525px; 
+  padding: 0;
+  border-radius: 10px 10px 10px 10px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  display: none;
+}
+
+.modal-content {
+  margin: 0; 
+  width: 100%;
+  display: flex; 
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center;
+  height: 100%; 
+  position: relative;     
+}
+
+.modal-title {
+  background: linear-gradient(
+    116deg,
+    rgba(78, 193, 239, 0.8) 0.47%,
+    rgba(96, 255, 207, 0.8) 99.98%,
+    rgba(220, 255, 204, 0.8) 99.99%,
+    rgba(89, 231, 219, 0) 100%
+  ); 
+  background-size: 100% auto;
+  color: #fff;
+  text-shadow: 1px 2px 3px #808080;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  position: absolute; /* 絶対位置指定 */
+  top: 0; /* 親要素の上端から0pxの位置 */
+  left: 0; /* 親要素の左端から0pxの位置 */
+  width: 100%;
+  font-weight: lighter;
+  border-radius: 10px 10px 0px 0px;
+}
+ 
+
+.modal-text{
+  text-align: center;
+  font-size: 1.3vw;
+}
+
+.modal-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(
+    116deg,
+    rgba(78, 193, 239, 0.8) 0.47%,
+    rgba(96, 255, 207, 0.8) 99.98%,
+    rgba(220, 255, 204, 0.8) 99.99%,
+    rgba(89, 231, 219, 0) 100%
+  );
+  width: 16vw;
+  height: 3.5vw;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.0vw;
+  font-weight: lighter;
+  margin: 0 auto;
+  display: block;
+  box-shadow: 4px 4px 4px 0px rgba(67, 103, 137, 0.5);
+  display: inline-block;
+  position: absolute;
+  bottom: 30px;
+  text-shadow: 1px 2px 3px #808080;
+  left: 50%;
+  transform: translateX(-50%);
+
+  &:active {
+    box-shadow: inset 4px 4px 4px 0px rgba(67, 103, 137, 0.5);
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-window {
+  height: 50vw;
+  width: 70vw; 
+  }
+  .modal-content {
+   width: 100vw; 
+  }
+  .modal-title { 
+   padding-top: 3vw;
+   padding-bottom: 3vw;
+   font-size: 4vw;
+  }
+  .modal-text{
+   font-size: 3vw;
+  }
+  .modal-button {
+   width: 40vw;
+   height: 6vw;
+   font-size: 2.5vw;
+  }
+ }

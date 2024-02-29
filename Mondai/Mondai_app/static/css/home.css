@@ -1,0 +1,186 @@
+section h1 {
+  float: left;
+}
+
+.return {
+  text-align: right;
+  padding: 3vh 0;
+}
+
+.item {
+  width: 90%;
+  height: 75%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+/*検索フォーム設定*/
+.search-form {
+  display: flex;
+  padding: 2px 15px;
+  height: 2.5vw;
+  appearance: none;
+  outline: 0;
+  margin: 0 auto 2.8vw auto;
+  width: 23vw;
+  border-radius: 5px;
+  border: 0.13vw solid #4ec1ef;
+  background: #fff;
+  color: #436789;
+  font-size: 0.75em;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.form-input {
+  border: none;
+  width: 100%;
+  outline: none;
+  &::-webkit-search-cancel-button {
+    -webkit-appearance: none; /* デフォルトのサーチキャンセルボタンを非表示にする場合 */
+  }
+}
+
+.form-button {
+  background-color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.list-title {
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2em;
+
+  li {
+    padding-right: 70px;
+    color: #436789;
+  }
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 1.5vw;
+}
+
+.in-item {
+  display: flex;
+
+  div {
+    margin: 8px 3.5vw;
+  }
+
+  &:hover img {
+    transform: translate(5px, 0);
+    transition-duration: 500ms;
+  }
+}
+
+#keywordName,
+#searchTag {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 0; /* 余白を調整 */
+  min-width: 116px; /* 最小幅を設定（必要に応じて調整） */
+  color: #436789;
+}
+
+hr {
+  border: solid 0.1px #436789;
+  opacity: 0.2;
+  width: 98%;
+}
+
+.pagination {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  height: 92%;
+  color: #436789;
+}
+
+.step-links {
+  margin-top: auto;
+  a {
+    color: #436789;
+  }
+}
+
+/* スマホ画面 */
+@media (max-width: 780px) {
+  section h1 {
+    float: left;
+  }
+
+  .return {
+    padding: 2svh 0;
+  }
+
+  .item {
+    width: 90%;
+    height: 82%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  /*検索フォーム設定*/
+  .search-form {
+    height: 8vw;
+    width: 50vw;
+  }
+
+  .form-input {
+    font-size: 0.75rem;
+  }
+
+  .list-title {
+    font-size: 0.85rem;
+
+    li {
+      padding-right: 25px;
+    }
+  }
+
+  .list-item {
+    padding-left: 3vw;
+    img {
+      width: 15px;
+      height: 15px;
+    }
+  }
+
+  .in-item {
+    font-size: 0.65rem;
+
+    div {
+      margin: 5px 3vw;
+    }
+  }
+
+  #keywordName,
+  #searchTag {
+    min-width: 80px; /* 最小幅を設定（必要に応じて調整） */
+  }
+
+  hr {
+    border: solid 0.1px #436789;
+    opacity: 0.2;
+    width: 98%;
+  }
+
+  .pagination {
+    font-size: 0.8rem;
+  }
+
+  .step-links {
+    margin-top: auto;
+    a {
+      color: #436789;
+    }
+  }
+}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include "sidebar.html" %}
+<h1>他の人の画面です</h1>
+
+<!-- メッセージタグを追加 参考：https://docs.djangoproject.com/ja/5.0/ref/contrib/messages/ -->
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<hr>
+<!-- 他の人のカテゴリを表示->問題一覧へ遷移 -->
+<ul class="others_categories" >
+    {% if others_categories %}
+        {% for category in others_categories %}
+        <li>
+            <span>
+                <!-- お気に入り登録・解除ボタン -->
+                <form action="{% url 'Mondai_app:favorite' category.id %}" method="post">
+                    {% csrf_token %}
+                    {% if category.id in favorite_categories %}
+                    <button type="submit">お気に入り解除</button>
+                    {% else %}
+                    <button type="submit">お気に入り登録</button>
+                    {% endif %}
+                </form>
+                <a href="{% url "Mondai_app:questions" pk=category.id %}">{{ category.category_name }}</a> : {{ category.search_tag}}
+            </span>
+        </li>
+        {% endfor %}
+    {% else %}
+      <li><span>カテゴリなし</span></li>
+    {% endif %}
+</ul>
+<hr>
+<!-- ページネーション用のUI -->
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <!-- 現在よりも前のページが存在する場合 -->
+            <a href="?page=1">&laquo; 先頭</a>
+            <a href="?page={{ page_obj.previous_page_number }}">前へ</a>
+        {% endif %}
+
+        <!-- 現在のページ番号と、全ページ数を表示 -->
+        <span class="current">
+            Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <!-- 現在よりも後のページが存在する場合 -->
+            <a href="?page={{ page_obj.next_page_number }}">次へ</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">最後 &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock content %}

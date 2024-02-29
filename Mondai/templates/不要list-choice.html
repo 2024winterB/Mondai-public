@@ -1,0 +1,25 @@
+{% extends "base.html" %} 
+
+{% block content %}
+{% include "sidebar.html" %}
+
+    <h1>{{ category.category_name }}のChoice一覧</h1>
+    <input
+    type="button"
+    onclick="location.href='{% url 'Mondai_app:questions' pk=category.id %}'"
+    value="問題一覧に戻る"
+    />
+    <form action="{% url 'Mondai_app:choice-add' pk=category.pk %}" method="post">
+        {% csrf_token %}
+        <input type="text" name="text" placeholder="追加choice">
+        <button type="submit">追加</button>
+    </form>
+    <ul>
+        {% for choice in object_list %}
+        <li>{{ choice.choice_name }}
+            <a href="{% url 'Mondai_app:choice-delete' pk=category.id choice_pk=choice.id %}">削除</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+{% endblock content %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- CSS読み込みの記述 -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/basics.css' %}" />
+{% endblock head %}
+
+{% block title %}
+<title>キーワード新規作成</title>
+{% endblock title %}
+
+{% block content %}
+<article>
+    {% include "sidebar.html" %}
+    <section>
+        <h1>キーワード新規作成</h1>
+        <div class="container">
+            <div class="item">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div>
+                        <label for="{{ form.keyword_name.id_for_label }}">キーワード</label>
+                        <!-- エラーメッセージ表示 -->
+                        {% for error in form.keyword_name.errors %}
+                            <span class="error kw-er">{{ error }}</span>
+                        {% endfor %}
+                        <input type="text" name="{{ form.keyword_name.name }}" id="{{ form.keyword_name.auto_id }}" placeholder="作成したいキーワードを入力してください" class="edit-form keyw" value="{% if form.instance.keyword_name %}{{ form.instance.keyword_name }}{% endif %}">
+                    </div>
+                    <div>
+                        <label for="{{ form.search_tag.id_for_label }}">タグ</label>
+                        <!-- 10文字以上で登録する場合のエラー表示 -->
+                        <ul class="messages" id="tag-error-message" style="color: red; display: none;"></ul>
+                        <input type="text" name="{{ form.search_tag.name }}" id="{{ form.search_tag.auto_id }}" placeholder="検索のヒントになるタグを入力してください" class="edit-form keyw"  value="{% if form.instance.search_tag %}{{ form.instance.search_tag }}{% endif %}" oninput="checkTagLength()">
+                    </div>
+                    <button type="submit" class="edit-btn">登録</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</article>
+
+{% endblock content %}
+
+{% block script %}
+<script src="{% static 'js/tag-error.js' %}"></script>
+{% endblock script %}

@@ -1,0 +1,25 @@
+.l-left {
+  float: left;
+}
+
+.kw-er {
+  font-size: 0.85em;
+}
+
+::placeholder {
+  font-size: 0.9em;
+}
+
+@media (max-width: 480px) {
+  .keyw {
+    font-size: 0.5em;
+  }
+
+  .kw-er {
+    font-size: 0.5rem;
+  }
+
+  .messages {
+    font-size: 0.75rem;
+  }
+}

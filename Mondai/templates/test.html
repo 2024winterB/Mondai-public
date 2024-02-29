@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- CSS読み込みの記述 -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/test.css' %}" />
+{% endblock head %}
+
+{% block title %}
+<title>テスト</title>
+{% endblock title %}
+
+{% block content %}
+<article>
+  {% include "sidebar.html" %}
+  <section>
+    <h1>テスト</h1>
+    <div class="return">
+      {% if check_favorite == "normal" %}
+        <a href="{% url 'Mondai_app:questions' pk=question.keyword.id %}">
+          問題一覧に戻る
+          <img src="{% static "images/ei_arrow-right.png" %}" alt="問題一覧に戻る">
+        </a>
+      {% elif check_favorite == "favorite" %}
+        <a href="{% url 'Mondai_app:favorite-questions' pk=question.keyword.id %}">
+          問題一覧に戻る
+          <img src="{% static "images/ei_arrow-right.png" %}" alt="問題一覧に戻る">
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="container">
+      <div class="item">
+        <div class="favorite-score">
+          {% if grades %}
+            <p>正解数:{{ grades.correct_number}} / 全回答数:{{ grades.challenge_number}}</p>
+          {% else %}
+            <p>まだ成績はありません</p>
+          {% endif %}
+        </div>
+
+        <div class="block">
+          <label>問題</label>
+          <p style="white-space: pre-wrap;">{{ question.question }}</p>
+        </div>
+        <form
+          action="{% url 'Mondai_app:test-post' check_favorite=check_favorite question_method=question_method pk=question.id %}"
+          method="post"
+        >
+          {% csrf_token %}
+          <div>
+            <textarea type="text" name="answer" id="id_answer" required class="a-form" placeholder="回答を入力してください" value="{{ form.instance.answer }}"></textarea>
+          </div>
+          <button
+            type="submit"
+            class="a-btn"
+          >回答</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</article>
+{% endblock content %}

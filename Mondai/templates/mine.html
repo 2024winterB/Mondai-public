@@ -1,0 +1,113 @@
+{% extends "base.html" %} {% block head %}
+<!-- CSS読み込みの記述 -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/basics.css' %}" />
+<link rel="stylesheet" href="{% static 'css/list.css' %}" />
+{% endblock head %} {% block title %}
+<title>お気に入りキーワード一覧</title>
+{% endblock title %} {% block content %}
+<article>
+  {% include "sidebar.html" %}
+  <section>
+    <h1>お気に入りキーワード一覧</h1>
+    <div class="return">
+      <form method="get" noindex class="search-form">
+        <input
+          type="search"
+          name="search"
+          placeholder="検索"
+          value="{{ search_query }}"
+          class="form-input"
+        />
+        <button type="submit" class="form-button">
+          <img src="{% static "images/tabler_search.png" %}" width="30vw"
+          height="30vw" alt="検索">
+        </button>
+      </form>
+    </div>
+    <div class="container">
+      <div class="item">
+        <table width="95%">
+          <thead>
+            <tr>
+              <th width="10%"></th>
+              <th width="45%">キーワード</th>
+              <th width="25%">検索タグ</th>
+              <th width="10%"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if mine_keywords %} {% for keyword in mine_keywords %}
+            <tr>
+              <td width="10%">
+                <!-- 編集ボタン -->
+                {% if user == keyword.user %}
+                <a href="{% url 'Mondai_app:update-keyword' pk=keyword.id %}">
+                  <img src="{% static "images/pencil.png" %}" width="25px"
+                  height="25px" alt="編集">
+                </a>
+                {% endif %}
+              </td>
+              <td width="45%" class="hoverable-cell td1">
+                <a
+                  href="{% url 'Mondai_app:favorite-questions' pk=keyword.id %}"
+                  class="lgtitle"
+                >
+                  {{ keyword.keyword_name }}
+                </a>
+              </td>
+              <td
+                width="25%"
+                id="searchTag"
+                class="hoverable-cell td2"
+              >
+              {% if keyword.search_tag %}
+                <a href="{% url 'Mondai_app:favorite-questions' pk=keyword.id %}" class="tagtitle">
+                  {{ keyword.search_tag }}
+                </a>
+                  {% else %}
+                  <!-- 余白の追加 -->
+                  <span class="space"></span>
+                  {% endif %}
+              </td>
+              <td width="10%" class="arrow-cell td3 hoverable-img">
+                <a href="{% url 'Mondai_app:favorite-questions' pk=keyword.id %}">
+                  <img src="{% static "images/link_arrow-right.png" %}"
+                  width="25px" height="25px" alt="各問題へ">
+                </a>
+              </td>
+              {% endfor%} {% else %}
+              <td colspan="4">キーワードが作成されていません</td>
+              {% endif %}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- ページネーション用のUI -->
+      <div class="pagination">
+        <span class="step-links">
+          {% if page_obj.has_previous %}
+          <!-- 現在よりも前のページが存在する場合 -->
+          <a href="?page=1">&laquo; 先頭</a>
+          <a href="?page={{ page_obj.previous_page_number }}">&lt;前へ</a>
+          {% endif %}
+
+          <span class="current">
+            <!-- 現在のページ番号と、全ページ数を表示 -->
+            {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+          </span>
+
+          {% if page_obj.has_next %}
+          <!-- 現在よりも後のページが存在する場合 -->
+          <a href="?page={{ page_obj.next_page_number }}">次へ&gt;</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}">最後 &raquo;</a>
+          {% endif %}
+        </span>
+      </div>
+    </div>
+  </section>
+</article>
+{% endblock content %} {% block script %}
+<script src="{% static 'js/text-length.js' %}"></script>
+<script src="{% static 'js/link.js' %}"></script>
+{% endblock script %}

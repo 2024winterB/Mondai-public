@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- CSS読み込みの記述 -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/userprofile.css' %}">
+{% endblock head %}
+
+{% block title %}
+<title>ユーザー情報</title>
+{% endblock title %}
+
+{% block content %}
+<article>
+  {% include "sidebar.html" %}
+  <section>
+    <h1>ユーザー情報</h1>
+    <div class="container">
+      <div class="flex">
+        <div>
+          <h3>アカウント名</h3>
+          <div class="info">{{ users.username }}</div>
+          <h3>メールアドレス</h3>
+          <div class="info">{{ users.email }}</div>
+        </div>
+        <div class="e-btn">
+          <button onclick="location.href='/mondai/edituser/'">
+            <img src="{% static "images/pencil.png" %}" alt="編集">
+            編集
+          </button>
+        </div>
+      </div>
+      <hr>
+      <div class="flex">
+        <h3>パスワード</h3>
+        <div class="e-btn">
+          <button onclick="location.href='/mondai/change-password'">
+            <img src="{% static "images/pencil.png" %}" alt="編集">
+            編集
+          </button>
+        </div>
+      </div>
+      <hr>
+    </div>
+  </section>
+</article>
+{% endblock content %}

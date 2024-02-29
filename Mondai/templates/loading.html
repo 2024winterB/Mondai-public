@@ -1,0 +1,10 @@
+{% block head %}
+<!-- CSS読み込みの記述 -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/loading.css' %}">
+{% endblock head %}
+
+<div id="loading">
+  <h3>GPTが解説記載中</h3>
+  <img src="{% static 'images/loading.gif' %}" alt="Loading...">
+</div>

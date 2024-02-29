@@ -1,0 +1,63 @@
+{% block head %}
+<!-- CSS読み込みの記述 -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+{% endblock head %}
+
+<section class="sidebar nav nav_menu_ul">
+  <a href="{% url "Mondai_app:home" %}">
+    <div class="title">
+      <h2>Linkey</h2>
+      <div class="key">
+        <img src="{% static "images/white_key.png" %}" alt="鍵アイコン">
+      </div>
+    </div>
+  </a>
+  <!-- ユーザーがログインしている場合、コンテンツ利用可能 -->
+  {% if user.is_authenticated %}
+    <nav>
+      <!-- ホーム画面以外の時にホーム画面へのリンクを表示する -->
+      {% if title != 'home'%}
+        <li class="nav_menu_li">
+          <a href="{% url "Mondai_app:home" %}">
+            <img src="{% static "images/home.png" %}" alt="ホーム">
+            ホーム
+          </a>
+        </li>
+      {% endif %}
+      <!-- 自分のカテゴリ画面以外の時に自分の問題画面へのリンクを表示する -->
+      {% if title != 'mine'%}
+        <li class="nav_menu_li">
+          <a href="{% url "Mondai_app:mine" %}">
+            <img src="{% static "images/shmdi_star.png" %}" alt="お気に入り">
+            お気に入り
+          </a>
+        </li>
+      {% endif %}
+
+      <li class="nav_menu_li">
+        <a href="{% url "Mondai_app:create-keyword" %}">
+          <img src="{% static "images/new_category.png" %}" alt="キーワード新規作成">
+          キーワード新規作成
+        </a>
+      </li>
+      <li class="nav_menu_li">
+        <a href="{% url "Mondai_app:profile" %}">
+          <img src="{% static "images/user_information.png" %}" alt="ユーザー情報">
+          ユーザー情報
+        </a>
+      </li>
+      <li class="nav_menu_li">
+        <a href="{% url "Mondai_app:logout" %}">
+          <img src="{% static "images/logout.png" %}" alt="ログアウト">
+          ログアウト
+        </a>
+      </li>
+    </nav>
+  {% endif %}
+</section>
+
+{% block script %}
+<script src="{% static 'js/sidebar.js' %}"></script>
+{% endblock script %}
