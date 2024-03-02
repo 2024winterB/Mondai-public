@@ -164,9 +164,7 @@ mecab-python3
     │       ├── test.html
     │       ├── update-keyword.html
     │       ├── update-question.html
-    │       ├── userprofile.html
-    │       ├── 不要list-choice.html
-    │       └── 不要others.html
+    │       └── userprofile.html
     ├── README.md
     ├── docker-compose.yml
     ├── mysql_data
