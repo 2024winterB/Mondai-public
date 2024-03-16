@@ -61,10 +61,13 @@ services:
     #           python manage.py collectstatic --noinput && \
     #           python manage.py runserver 0.0.0.0:8000"
     # Nginxを使う場合は、以下のcommandに差し替える
-    command: bash -c "python manage.py makemigrations && \
-            python manage.py migrate && \
-            python manage.py collectstatic --noinput && \
-            uwsgi --socket :8000 --module Mondai_project.wsgi --py-autoreload 1 --logto /tmp/mylog.log"
+    command: bash -c "python manage.py makemigrations && 
+            python manage.py migrate && 
+            python manage.py collectstatic --noinput && 
+            cp cron ../etc/cron.d/cron &&
+            chmod 0644 ../etc/cron.d/cron &&
+            service cron restart &&
+            uwsgi --socket :8000 --module Mondai_project.wsgi --py-autoreload 1 --log-master" #ログを表示せずに保存するなら--logto /tmp/mylog.log追記
     # コンテナ内の環境変数を.envを使って設定
     env_file:
       - .env
