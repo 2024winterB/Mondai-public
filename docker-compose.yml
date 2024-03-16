@@ -64,9 +64,6 @@ services:
     command: bash -c "python manage.py makemigrations && 
             python manage.py migrate && 
             python manage.py collectstatic --noinput && 
-            cp cron ../etc/cron.d/cron &&
-            chmod 0644 ../etc/cron.d/cron &&
-            service cron restart &&
             uwsgi --socket :8000 --module Mondai_project.wsgi --py-autoreload 1 --log-master" #ログを表示せずに保存するなら--logto /tmp/mylog.log追記
     # コンテナ内の環境変数を.envを使って設定
     env_file:
